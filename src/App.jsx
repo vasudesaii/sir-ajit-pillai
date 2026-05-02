@@ -115,8 +115,15 @@ async function syncTable(tableName, current, previous, idField = "id") {
     await supabase.from(tableName).delete().in(idField, ids);
   }
 
-  // Upserts
-  const toUpsert = current.map((c) => TABLE_MAP[tableName].toDb(c));
+  // Upserts (only changed or new items)
+  const toUpsert = current
+    .filter(c => {
+      const prev = prevMap.get(c[idField]);
+      // If it didn't exist before, or if it changed (JSON comparison)
+      return !prev || JSON.stringify(prev) !== JSON.stringify(c);
+    })
+    .map((c) => TABLE_MAP[tableName].toDb(c));
+    
   if (toUpsert.length > 0) {
     await supabase.from(tableName).upsert(toUpsert, { onConflict: idField });
   }
