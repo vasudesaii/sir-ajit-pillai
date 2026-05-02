@@ -1,5 +1,5 @@
-const CACHE_NAME = "ajit-pillai-v1";
-const urlsToCache = ["/", "/index.html", "/src/main.jsx"];
+const CACHE_NAME = "ajit-pillai-v3";
+const urlsToCache = ["/", "/index.html"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
